@@ -3,50 +3,39 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useEffect, useState } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+// Removed: import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// Removed: import { AlertCircle } from "lucide-react";
+// Removed: import { useToast } from "@/hooks/use-toast";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./components/ui/alert-dialog";
+import { useIsMobile } from "./hooks/use-mobile";
 
-// Custom hook to detect mobile devices
-const useMobileDetection = () => {
-  const [isMobile, setIsMobile] = useState(false);
+// Removed: Custom hook to detect mobile devices (replaced by useIsMobile from hooks)
+// Removed: const useMobileDetection = () => {
+// Removed:   const [isMobile, setIsMobile] = useState(false);
+// Removed:   useEffect(() => {
+// Removed:     const checkIfMobile = () => {
+// Removed:       setIsMobile(window.innerWidth < 768);
+// Removed:     };
+// Removed:     checkIfMobile();
+// Removed:     window.addEventListener('resize', checkIfMobile);
+// Removed:     return () => window.removeEventListener('resize', checkIfMobile);
+// Removed:   }, []);
+// Removed:   return { isMobile };
+// Removed: };
 
-  useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    // Initial check
-    checkIfMobile();
-
-    // Add event listener for window resize
-    window.addEventListener('resize', checkIfMobile);
-
-    // Cleanup
-    return () => window.removeEventListener('resize', checkIfMobile);
-  }, []);
-
-  return { isMobile };
-};
-
-// Mobile Alert Component
-const MobileAlert = () => (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-    <Alert className="max-w-md bg-white dark:bg-gray-800 shadow-lg">
-      <AlertCircle className="h-6 w-6 text-yellow-500" />
-      <AlertTitle className="text-lg font-bold">Mobile Not Supported</AlertTitle>
-      <AlertDescription className="mt-2">
-        <p>This application is optimized for desktop use.</p>
-        <p className="mt-2">For the best experience, please access this application from a desktop computer or switch to desktop mode in your mobile browser settings.</p>
-      </AlertDescription>
-      <button 
-        onClick={() => window.close()}
-        className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
-      >
-        Close
-      </button>
-    </Alert>
-  </div>
-);
+// Removed: Mobile Alert Component - Shows a toast notification on mobile devices (replaced by AlertDialog)
+// Removed: const MobileAlert = () => {
+// Removed:   const { toast } = useToast();
+// Removed:   useEffect(() => {
+// Removed:     toast({
+// Removed:       title: "📱 Mobile Device Detected",
+// Removed:       description: "For the best experience, please use a desktop computer or enable 'Desktop Site' in your mobile browser settings.",
+// Removed:       variant: "destructive",
+// Removed:       duration: 10000, // Show for 10 seconds
+// Removed:     });
+// Removed:   }, [toast]);
+// Removed:   return null; // Don't render anything, just show the toast
+// Removed: };
 
 // Import React Query for managing data
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -75,7 +64,7 @@ const queryClient = new QueryClient();
 
 // Main App component that sets up the entire application
 const App = () => {
-  const { isMobile } = useMobileDetection();
+  const isMobile = useIsMobile(); // Use the hook from src/hooks/use-mobile
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -84,8 +73,24 @@ const App = () => {
         <Toaster />
         <Sonner />
 
-        {/* Show mobile alert if on mobile */}
-        {isMobile && <MobileAlert />}
+        {/* Show mobile alert dialog if on mobile */}
+        {isMobile && (
+          <AlertDialog open={isMobile} onOpenChange={() => { /* Prevent closing */ }}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Mobile Device Not Supported</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This application is not optimized for mobile devices. Please switch to a desktop browser for the best experience.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogAction onClick={() => { /* Optionally, add logic to redirect or simply acknowledge */ }}>
+                  Got It
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
 
         {/* Set up routing for the app */}
         <BrowserRouter>
@@ -117,5 +122,53 @@ const App = () => {
     </QueryClientProvider>
   );
 };
+
+// Removed: Duplicate App function declaration
+// Removed: function App() {
+// Removed:   const isMobile = useIsMobile();
+// Removed:   return (
+// Removed:     <div className="App">
+// Removed:       {isMobile && (
+// Removed:         <AlertDialog open={isMobile} onOpenChange={() => { /* Prevent closing */ }}>
+// Removed:           <AlertDialogContent>
+// Removed:             <AlertDialogHeader>
+// Removed:               <AlertDialogTitle>Mobile Device Not Supported</AlertDialogTitle>
+// Removed:               <AlertDialogDescription>
+// Removed:                 This application is not optimized for mobile devices. Please switch to a desktop browser for the best experience.
+// Removed:               </AlertDialogDescription>
+// Removed:             </AlertDialogHeader>
+// Removed:             <AlertDialogFooter>
+// Removed:               <AlertDialogAction onClick={() => { /* Optionally, add logic to redirect or simply acknowledge */ }}>
+// Removed:                 Got It
+// Removed:               </AlertDialogAction>
+// Removed:             </AlertDialogFooter>
+// Removed:           </AlertDialogContent>
+// Removed:         </AlertDialog>
+// Removed:       )}
+// Removed:       <Layout>
+// Removed:         <Routes>
+// Removed:           {/* Main dashboard page */}
+// Removed:           <Route path="/" element={<Index />} />
+// Removed:           {/* Information pages */}
+// Removed:           <Route path="/about" element={<About />} />
+// Removed:           <Route path="/contact" element={<Contact />} />
+// Removed:           {/* Main features */}
+// Removed:           <Route path="/inventory" element={<Inventory />} />
+// Removed:           <Route path="/orders" element={<Orders />} />
+// Removed:           <Route path="/suppliers" element={<Suppliers />} />
+// Removed:           <Route path="/analytics" element={<Analytics />} />
+// Removed:           <Route path="/warehouse" element={<Warehouse />} />
+// Removed:           <Route path="/reports" element={<Reports />} />
+// Removed:           <Route path="/sales" element={<Sales />} />
+// Removed:           <Route path="/ai-tools" element={<AITools />} />
+// Removed:           <Route path="/notifications" element={<Notifications />} />
+// Removed:           <Route path="/settings" element={<Settings />} />
+// Removed:           {/* 404 page for unknown routes */}
+// Removed:           <Route path="*" element={<NotFound />} />
+// Removed:         </Routes>
+// Removed:       </Layout>
+// Removed:     </div>
+// Removed:   );
+// Removed: }
 
 export default App;
