@@ -83,7 +83,6 @@ const App = () => {
         {/* Toast notifications for user feedback */}
         <Toaster />
         <Sonner />
-
         {/* Set up routing for the app */}
         <BrowserRouter>
         <Routes>
