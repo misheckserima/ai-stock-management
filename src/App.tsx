@@ -2,40 +2,38 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useEffect, useState } from "react";
-// Removed: import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-// Removed: import { AlertCircle } from "lucide-react";
-// Removed: import { useToast } from "@/hooks/use-toast";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./components/ui/alert-dialog";
+import { useEffect } from "react";
 import { useIsMobile } from "./hooks/use-mobile";
 
-// Removed: Custom hook to detect mobile devices (replaced by useIsMobile from hooks)
-// Removed: const useMobileDetection = () => {
-// Removed:   const [isMobile, setIsMobile] = useState(false);
-// Removed:   useEffect(() => {
-// Removed:     const checkIfMobile = () => {
-// Removed:       setIsMobile(window.innerWidth < 768);
-// Removed:     };
-// Removed:     checkIfMobile();
-// Removed:     window.addEventListener('resize', checkIfMobile);
-// Removed:     return () => window.removeEventListener('resize', checkIfMobile);
-// Removed:   }, []);
-// Removed:   return { isMobile };
-// Removed: };
+// Add viewport meta tag for mobile devices
+const setViewportMeta = () => {
+  if (typeof document !== 'undefined') {
+    let meta = document.querySelector('meta[name="viewport"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'viewport');
+      document.head.appendChild(meta);
+    }
+    // Allow zooming for better accessibility
+    meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0');
+  }
+};
 
-// Removed: Mobile Alert Component - Shows a toast notification on mobile devices (replaced by AlertDialog)
-// Removed: const MobileAlert = () => {
-// Removed:   const { toast } = useToast();
-// Removed:   useEffect(() => {
-// Removed:     toast({
-// Removed:       title: "📱 Mobile Device Detected",
-// Removed:       description: "For the best experience, please use a desktop computer or enable 'Desktop Site' in your mobile browser settings.",
-// Removed:       variant: "destructive",
-// Removed:       duration: 10000, // Show for 10 seconds
-// Removed:     });
-// Removed:   }, [toast]);
-// Removed:   return null; // Don't render anything, just show the toast
-// Removed: };
+// Add CSS variables for mobile safe areas
+const addMobileSafeAreaVars = () => {
+  if (typeof document !== 'undefined') {
+    const style = document.createElement('style');
+    style.textContent = `
+      :root {
+        --safe-area-top: env(safe-area-inset-top, 0px);
+        --safe-area-right: env(safe-area-inset-right, 0px);
+        --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+        --safe-area-left: env(safe-area-inset-left, 0px);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+};
 
 // Import React Query for managing data
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -64,7 +62,20 @@ const queryClient = new QueryClient();
 
 // Main App component that sets up the entire application
 const App = () => {
-  const isMobile = useIsMobile(); // Use the hook from src/hooks/use-mobile
+  const isMobile = useIsMobile();
+  
+  // Set viewport meta tag and safe area variables for mobile devices
+  useEffect(() => {
+    setViewportMeta();
+    addMobileSafeAreaVars();
+    
+    // Add a class to the body for mobile-specific styles
+    if (isMobile) {
+      document.body.classList.add('is-mobile');
+    } else {
+      document.body.classList.remove('is-mobile');
+    }
+  }, [isMobile]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -72,25 +83,6 @@ const App = () => {
         {/* Toast notifications for user feedback */}
         <Toaster />
         <Sonner />
-
-        {/* Show mobile alert dialog if on mobile */}
-        {isMobile && (
-          <AlertDialog open={isMobile} onOpenChange={() => { /* Prevent closing */ }}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Mobile Device Not Supported</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This application is not optimized for mobile devices. Please switch to a desktop browser for the best experience.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogAction onClick={() => { /* Optionally, add logic to redirect or simply acknowledge */ }}>
-                  Got It
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
 
         {/* Set up routing for the app */}
         <BrowserRouter>
