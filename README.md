@@ -1,5 +1,10 @@
 # <div align="center">🚀 AI Stock Management System</div>
 
+> **Note:** This application is optimized for desktop use. For the best experience, please access it from a desktop computer or switch to desktop mode if using a mobile device.
+
+## 📱 Mobile Compatibility
+This application is not optimized for mobile devices. For the best experience, please use a desktop computer or switch to desktop mode in your mobile browser settings if you need to access it on a mobile device.
+
 <div align="center">
   <p align="center">
     <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
@@ -89,6 +94,11 @@ This project is a modern **stock management system interface**, designed and bui
 - **🎯 Modern UI**: Clean, minimalist design with attention to detail
 
 <hr style="background: linear-gradient(to right, #FF6B6B, #4ECDC4); height: 2px; border: none;">
+
+## <span style="color: #FF6B6B;">🖥️ System Requirements</span>
+- Desktop computer or laptop (not optimized for mobile devices)
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- Internet connection
 
 ## <span style="color: #FF6B6B;">🚀 Getting Started</span>
 
